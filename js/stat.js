@@ -51,7 +51,7 @@ window.renderStatistics = function (ctx, names, times) {
   * @param {string} fontStyle стиль шрифта
   */
   var getFont = function (context, fontStyle) {
-    context.Font = fontStyle;
+    context.font = fontStyle;
   };
 
   /**
