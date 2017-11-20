@@ -1,18 +1,18 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
-  var maxValue = 0;
   var barHeight = 150;
   var barWidth = 40;
   var indent = 50;
   var initialX = 155;
   var initialY = 250;
   var lineHeight = 20;
+  var yourName = 'Вы';
 
   /**
   * Отрисовываем прямоугольник по заданным размерам
   *
-  * @param {var} context контекст отрисовки
+  * @param {object} context контекст отрисовки
   * @param {number} coordinateX координата X начала отрисовки
   * @param {number} coordinateY координата Y начала отрисовки
   * @param {number} width ширина прямоугольника
@@ -25,7 +25,7 @@ window.renderStatistics = function (ctx, names, times) {
   /**
   * Отрисовывам текст в канвасе
   *
-  * @param {var} context контекст отрисовки
+  * @param {object} context контекст отрисовки
   * @param {string} string текст
   * @param {number} coordinateX координата X начала отрисовки
   * @param {number} coordinateY координата Y начала отрисовки
@@ -37,20 +37,20 @@ window.renderStatistics = function (ctx, names, times) {
   /**
   * Задаем цвет заливки для элементов
   *
-  * @param {var} context контекст отрисовки
+  * @param {object} context контекст отрисовки
   * @param {string} color цвет заливки
   */
-  var getStyle = function (context, color) {
+  var setStyle = function (context, color) {
     context.fillStyle = color;
   };
 
   /**
   * Задаем шрифт для элементов
   *
-  * @param {var} context контекст отрисовки
+  * @param {object} context контекст отрисовки
   * @param {string} fontStyle стиль шрифта
   */
-  var getFont = function (context, fontStyle) {
+  var setFont = function (context, fontStyle) {
     context.font = fontStyle;
   };
 
@@ -61,6 +61,7 @@ window.renderStatistics = function (ctx, names, times) {
   * @return {number} элемент массива с максимальным значением
   */
   var getMaxValue = function (arr) {
+    var maxValue = 0;
     for (var i = 0; i < arr.length; i++) {
       if (arr[i] > maxValue) {
         maxValue = arr[i];
@@ -80,32 +81,29 @@ window.renderStatistics = function (ctx, names, times) {
     return Math.random() * (max - min) + min;
   };
 
-  getStyle(ctx, 'rgba(0, 0, 0, 0.7)');
+  setStyle(ctx, 'rgba(0, 0, 0, 0.7)');
   drawRect(ctx, 110, 20, 420, 270);
-  getStyle(ctx, 'white');
+  setStyle(ctx, 'white');
   drawRect(ctx, 100, 10, 420, 270);
-  getFont(ctx, '16px PT Mono');
-  getStyle(ctx, 'black');
+  setFont(ctx, '16px PT Mono');
+  setStyle(ctx, 'black');
   writeString(ctx, 'Ура вы победили!', 130, 40);
   writeString(ctx, 'Список результатов:', 130, 60);
 
   for (var i = 0; i < times.length; i++) {
     var currentTime = Math.round(times[i]);
     var currentHeight = currentTime * barHeight / getMaxValue(times);
-    // окрашиваем бар игрока в красный, макс значение в синий, остальных в прозрачный синий
-    if (names[i] === 'Вы') {
-      getStyle(ctx, 'rgba(255, 0, 0, 1)');
+    if (names[i] === yourName) {
+      setStyle(ctx, 'rgba(255, 0, 0, 1)');
     } else if (times[i] === getMaxValue(times)) {
-      getStyle(ctx, 'rgba(0, 0, 255, 1)');
+      setStyle(ctx, 'rgba(0, 0, 255, 1)');
     } else {
-      getStyle(ctx, 'rgba(0, 0, 255, ' + getRandomNumber(0.1, 0.9) + ')');
+      setStyle(ctx, 'rgba(0, 0, 255, ' + getRandomNumber(0.1, 0.9) + ')');
     }
     drawRect(ctx, initialX + (barWidth + indent) * i, initialY - barHeight, barWidth, barHeight);
-    // закрываем белым прямоугольником часть высоты бара сверху (другой способ не придумала)
-    getStyle(ctx, 'white');
+    setStyle(ctx, 'white');
     drawRect(ctx, initialX + (barWidth + indent) * i, initialY - barHeight, barWidth, barHeight - currentHeight);
-    // добавляем имя и время
-    getStyle(ctx, 'black');
+    setStyle(ctx, 'black');
     writeString(ctx, currentTime, initialX + (barWidth + indent) * i, initialY - currentHeight - lineHeight / 2);
     writeString(ctx, names[i], initialX + (barWidth + indent) * i, initialY + lineHeight);
   }
