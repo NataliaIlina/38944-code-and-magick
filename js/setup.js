@@ -6,41 +6,39 @@ var WIZARDS_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', '
 var WIZARDS_COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
 var WIZARDS_EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 
+var copyWizardsNames = WIZARDS_NAMES.slice();
+var copyWizardsSurnames = WIZARDS_SURNAMES.slice();
+var copyWizardsCoatColors = WIZARDS_COAT_COLORS.slice();
+var copyWizardsEyesColors = WIZARDS_EYES_COLORS.slice();
 var wizards = [];
-var wizardsList = document.querySelector('.setup-similar-list');
+var wizardsListElement = document.querySelector('.setup-similar-list');
 var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var fragment = document.createDocumentFragment();
 
 document.querySelector('.setup').classList.remove('hidden');
 document.querySelector('.setup-similar').classList.remove('hidden');
 
-// заполняем wizards
+// заполняем wizards, добавляем во фрагмент копии шаблона мага
 for (var i = 0; i < TOTAL_WIZARDS_NUMBER; i++) {
-  wizards[i] = {};
-  wizards[i].name = getRandomElement(WIZARDS_NAMES) + ' ' + getRandomElement(WIZARDS_SURNAMES);
-  wizards[i].coatColor = getRandomElement(WIZARDS_COAT_COLORS);
-  wizards[i].eyesColor = getRandomElement(WIZARDS_EYES_COLORS);
-}
-
-for (i = 0; i < wizards.length; i++) {
+  wizards[i] = generateObject(copyWizardsNames, copyWizardsSurnames, copyWizardsCoatColors, copyWizardsEyesColors);
   addElement(fragment, renderWizard(wizardTemplate, wizards[i]));
 }
-
-addElement(wizardsList, fragment);
+// добавляем фрагмент в DOM
+addElement(wizardsListElement, fragment);
 
 /**
-* Возвращает значение случайного элемента заданного массива
+* getRandomElement - возвращает значение случайного элемента заданного массива, удаляя его из массива
 *
 * @param {Array} arr массив
 * @return {string} случайный элемент массива
 */
 function getRandomElement(arr) {
   var index = Math.floor(Math.random() * arr.length);
-  return arr[index];
+  return arr.splice(index, 1);
 }
 
 /**
-* Добавляет новый элемент в конец родительского блока
+* addElement - добавляет новый элемент в конец родительского блока
 *
 * @param {Object} parentElement родительский блок
 * @param {Object} childElement добавляемый элемент
@@ -50,7 +48,24 @@ function addElement(parentElement, childElement) {
 }
 
 /**
-* Возвращает скопированный с шаблона элемент со стилями
+ * generateObject - возвращает объект с данными, взятыми из массивов
+ *
+ * @param  {Array} arrNames массив имен
+ * @param  {Array} arrSurnames массив фамилий
+ * @param  {Array} arrCoats массив со значениями цвета накидки
+ * @param  {Array} arrEyes массив со значениями цвета глаз
+ * @return {Object} сгенерированный объект
+ */
+function generateObject(arrNames, arrSurnames, arrCoats, arrEyes) {
+  var obj = {};
+  obj.name = getRandomElement(arrNames) + ' ' + getRandomElement(arrSurnames);
+  obj.coatColor = getRandomElement(arrCoats);
+  obj.eyesColor = getRandomElement(arrEyes);
+  return obj;
+}
+
+/**
+* renderWizard - возвращает скопированный с шаблона элемент со стилями
 *
 * @param {Object} template шаблон
 * @param {Object} obj объект с используемыми свойствами
