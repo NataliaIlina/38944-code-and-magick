@@ -1,12 +1,12 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
-  var barHeight = 150;
-  var barWidth = 40;
-  var indent = 50;
-  var initialX = 155;
-  var initialY = 250;
-  var lineHeight = 20;
+  var BAR_HEIGHT = 150;
+  var BAR_WIDTH = 40;
+  var INDENT = 50;
+  var INITIAL_X = 155;
+  var INITIAL_Y = 250;
+  var LINE_HEIGHT = 20;
   var yourName = 'Вы';
 
   setStyle(ctx, 'rgba(0, 0, 0, 0.7)');
@@ -20,7 +20,7 @@ window.renderStatistics = function (ctx, names, times) {
 
   for (var i = 0; i < times.length; i++) {
     var currentTime = Math.round(times[i]);
-    var currentHeight = currentTime * barHeight / getMaxValue(times);
+    var currentHeight = currentTime * BAR_HEIGHT / getMaxValue(times);
     if (names[i] === yourName) {
       setStyle(ctx, 'rgba(255, 0, 0, 1)');
     } else if (times[i] === getMaxValue(times)) {
@@ -28,12 +28,12 @@ window.renderStatistics = function (ctx, names, times) {
     } else {
       setStyle(ctx, 'rgba(0, 0, 255, ' + getRandomNumber(0.1, 0.9) + ')');
     }
-    drawRect(ctx, initialX + (barWidth + indent) * i, initialY - barHeight, barWidth, barHeight);
+    drawRect(ctx, INITIAL_X + (BAR_WIDTH + INDENT) * i, INITIAL_Y - BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT);
     setStyle(ctx, 'white');
-    drawRect(ctx, initialX + (barWidth + indent) * i, initialY - barHeight, barWidth, barHeight - currentHeight);
+    drawRect(ctx, INITIAL_X + (BAR_WIDTH + INDENT) * i, INITIAL_Y - BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT - currentHeight);
     setStyle(ctx, 'black');
-    writeString(ctx, currentTime, initialX + (barWidth + indent) * i, initialY - currentHeight - lineHeight / 2);
-    writeString(ctx, names[i], initialX + (barWidth + indent) * i, initialY + lineHeight);
+    writeString(ctx, currentTime, INITIAL_X + (BAR_WIDTH + INDENT) * i, INITIAL_Y - currentHeight - LINE_HEIGHT / 2);
+    writeString(ctx, names[i], INITIAL_X + (BAR_WIDTH + INDENT) * i, INITIAL_Y + LINE_HEIGHT);
   }
 
   /**
