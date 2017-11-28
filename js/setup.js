@@ -18,11 +18,15 @@ var fragment = document.createDocumentFragment();
 document.querySelector('.setup').classList.remove('hidden');
 document.querySelector('.setup-similar').classList.remove('hidden');
 
-// заполняем wizards, добавляем во фрагмент копии шаблона мага
+// заполняем wizards
 for (var i = 0; i < TOTAL_WIZARDS_NUMBER; i++) {
-  wizards[i] = generateObject(copyWizardsNames, copyWizardsSurnames, copyWizardsCoatColors, copyWizardsEyesColors);
-  addElement(fragment, renderWizard(wizardTemplate, wizards[i]));
+  wizards[i] = generateObject();
 }
+// добавляем во фрагмент копии шаблона мага
+wizards.forEach(function (item, index) {
+  addElement(fragment, renderWizard(wizards[index]));
+});
+
 // добавляем фрагмент в DOM
 addElement(wizardsListElement, fragment);
 
@@ -50,29 +54,24 @@ function addElement(parentElement, childElement) {
 /**
  * generateObject - возвращает объект с данными, взятыми из массивов
  *
- * @param  {Array} arrNames массив имен
- * @param  {Array} arrSurnames массив фамилий
- * @param  {Array} arrCoats массив со значениями цвета накидки
- * @param  {Array} arrEyes массив со значениями цвета глаз
  * @return {Object} сгенерированный объект
  */
-function generateObject(arrNames, arrSurnames, arrCoats, arrEyes) {
+function generateObject() {
   var obj = {};
-  obj.name = getRandomElement(arrNames) + ' ' + getRandomElement(arrSurnames);
-  obj.coatColor = getRandomElement(arrCoats);
-  obj.eyesColor = getRandomElement(arrEyes);
+  obj.name = getRandomElement(copyWizardsNames) + ' ' + getRandomElement(copyWizardsSurnames);
+  obj.coatColor = getRandomElement(copyWizardsCoatColors);
+  obj.eyesColor = getRandomElement(copyWizardsEyesColors);
   return obj;
 }
 
 /**
 * renderWizard - возвращает скопированный с шаблона элемент со стилями
 *
-* @param {Object} template шаблон
 * @param {Object} obj объект с используемыми свойствами
 * @return {Object} скопированный стилизованный DOM-элемент
 */
-function renderWizard(template, obj) {
-  var cloneElement = template.cloneNode(true);
+function renderWizard(obj) {
+  var cloneElement = wizardTemplate.cloneNode(true);
   var wizardName = cloneElement.querySelector('.setup-similar-label');
   var wizardCoat = cloneElement.querySelector('.wizard-coat');
   var wizardEyes = cloneElement.querySelector('.wizard-eyes');
