@@ -150,10 +150,8 @@ function onWizardEyesClick() {
  * @param  {Object} evt объект event
  */
 function onPopupEscPress(evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    if (evt.target !== setupNameInput) {
-      closePopup();
-    }
+  if (evt.keyCode === ESC_KEYCODE && evt.target !== setupNameInput) {
+    closePopup();
   }
 }
 
