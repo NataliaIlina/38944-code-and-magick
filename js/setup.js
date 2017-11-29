@@ -94,10 +94,7 @@ addElement(wizardsListElement, fragment);
 function openPopup() {
   setup.classList.remove('hidden');
   // закрываем по esc
-  onEscClose();
-  // при фокусе на поле ввода отменяем закрытие по esc
-  setupNameInput.addEventListener('focus', removeOnEscClose);
-  setupNameInput.addEventListener('focusout', onEscClose);
+  document.addEventListener('keydown', onPopupEscPress);
   // ловим клики на попапе
   setup.addEventListener('click', onSetupClick);
   // закрываем на кнопку/крестик по enter
@@ -112,9 +109,7 @@ function openPopup() {
 function closePopup() {
   setup.classList.add('hidden');
   // удаляем обработчики
-  removeOnEscClose();
-  setupNameInput.removeEventListener('focus', removeOnEscClose);
-  setupNameInput.removeEventListener('focusout', onEscClose);
+  document.removeEventListener('keydown', onPopupEscPress);
   setup.removeEventListener('click', onSetupClick);
   setupClose.removeEventListener('keydown', onButtonEnterPress);
   setupSubmit.removeEventListener('keydown', onButtonEnterPress);
@@ -156,24 +151,10 @@ function onWizardEyesClick() {
  */
 function onPopupEscPress(evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    closePopup();
+    if (evt.target !== setupNameInput) {
+      closePopup();
+    }
   }
-}
-
-/**
- * onEscClose - добавляет функцию закрытия окна по esc
- *
- */
-function onEscClose() {
-  document.addEventListener('keydown', onPopupEscPress);
-}
-
-/**
- * removeOnEscClose - удаляет функцию закрытия окна по esc
- *
- */
-function removeOnEscClose() {
-  document.removeEventListener('keydown', onPopupEscPress);
 }
 
 /**
