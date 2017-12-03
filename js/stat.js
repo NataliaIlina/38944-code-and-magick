@@ -21,13 +21,13 @@
 
     for (var i = 0; i < times.length; i++) {
       var currentTime = Math.round(times[i]);
-      var currentHeight = currentTime * BAR_HEIGHT / window.global.getMaxValue(times);
+      var currentHeight = currentTime * BAR_HEIGHT / window.util.getMaxValue(times);
       if (names[i] === yourName) {
         setStyle(ctx, 'rgba(255, 0, 0, 1)');
-      } else if (times[i] === window.global.getMaxValue(times)) {
+      } else if (times[i] === window.util.getMaxValue(times)) {
         setStyle(ctx, 'rgba(0, 0, 255, 1)');
       } else {
-        setStyle(ctx, 'rgba(0, 0, 255, ' + window.global.getRandomNumber(0.1, 0.9) + ')');
+        setStyle(ctx, 'rgba(0, 0, 255, ' + window.util.getRandomNumber(0.1, 0.9) + ')');
       }
       drawRect(ctx, INITIAL_X + (BAR_WIDTH + INDENT) * i, INITIAL_Y - BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT);
       setStyle(ctx, 'white');

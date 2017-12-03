@@ -185,7 +185,7 @@
    *
    */
   function onWizardFireballClick() {
-    var fireball = window.global.getRandomElement(WIZARDS_FIREBALL_COLORS);
+    var fireball = window.util.getRandomElement(WIZARDS_FIREBALL_COLORS);
     mainWizardFireball.style.backgroundColor = fireball;
     fireballInput.value = fireball;
   }
@@ -195,7 +195,7 @@
    *
    */
   function onWizardCoatClick() {
-    var coat = window.global.getRandomElement(WIZARDS_COAT_COLORS);
+    var coat = window.util.getRandomElement(WIZARDS_COAT_COLORS);
     mainWizardCoat.style.fill = coat;
     coatInput.value = coat;
   }
@@ -205,7 +205,7 @@
    *
    */
   function onWizardEyesClick() {
-    var eyes = window.global.getRandomElement(WIZARDS_EYES_COLORS);
+    var eyes = window.util.getRandomElement(WIZARDS_EYES_COLORS);
     mainWizardEyes.style.fill = eyes;
     eyesInput.value = eyes;
   }
@@ -217,7 +217,7 @@
    */
   function onPopupEscPress(evt) {
     if (evt.target !== setupNameInput) {
-      window.global.isEscPress(evt, closePopup);
+      window.util.isEscPress(evt, closePopup);
     }
   }
 
@@ -227,7 +227,7 @@
    * @param  {Object} evt объект event
    */
   function onIconEnterPress(evt) {
-    window.global.isEnterPress(evt, openPopup);
+    window.util.isEnterPress(evt, openPopup);
   }
 
   /**
@@ -236,7 +236,7 @@
    * @param  {Object} evt объект event
    */
   function onButtonEnterPress(evt) {
-    window.global.isEnterPress(evt, closePopup);
+    window.util.isEnterPress(evt, closePopup);
   }
 
 
@@ -272,9 +272,9 @@
    */
   function generateObject() {
     var obj = {};
-    obj.name = window.global.getRandomElement(copyWizardsNames, true) + ' ' + window.global.getRandomElement(copyWizardsSurnames, true);
-    obj.coatColor = window.global.getRandomElement(copyWizardsCoatColors, true);
-    obj.eyesColor = window.global.getRandomElement(copyWizardsEyesColors, true);
+    obj.name = window.util.getRandomElement(copyWizardsNames, true) + ' ' + window.util.getRandomElement(copyWizardsSurnames, true);
+    obj.coatColor = window.util.getRandomElement(copyWizardsCoatColors, true);
+    obj.eyesColor = window.util.getRandomElement(copyWizardsEyesColors, true);
     return obj;
   }
 
