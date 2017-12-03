@@ -67,6 +67,68 @@
   var eyesInput = setup.querySelector('input[name=eyes-color]');
   var fireballInput = setup.querySelector('input[name=fireball-color]');
 
+  // переменные для drag'n'drop
+  var setupShop = setup.querySelector('.setup-artifacts-shop');
+  var setupArtifacts = setup.querySelector('.setup-artifacts');
+  var draggedItem = null;
+  var artItem = null;
+  // отслеживаем начало перемещения из магазина
+  setupShop.addEventListener('dragstart', function (evt) {
+    if (evt.target.tagName.toLowerCase() === 'img') {
+      draggedItem = evt.target;
+      evt.dataTransfer.setData('text/plain', evt.target.alt);
+      setupArtifacts.style.outline = '2px dashed red';
+      // если элемент отпустили раньше времени
+      draggedItem.addEventListener('dragend', function () {
+        setupArtifacts.style.outline = '';
+        draggedItem = null;
+      });
+    }
+  });
+  // отслеживаем начало перемещения из рюкзака
+  setupArtifacts.addEventListener('dragstart', function (evt) {
+    if (evt.target.tagName.toLowerCase() === 'img') {
+      artItem = evt.target;
+      setupArtifacts.style.outline = '2px dashed red';
+      evt.dataTransfer.setData('text/plain', evt.target.alt);
+    }
+  });
+  // делаем рюкзак доступным для перетаскивания
+  setupArtifacts.addEventListener('dragover', function (evt) {
+    evt.preventDefault();
+    return false;
+  });
+  // копируем элемент в пустую ячейку рюкзака, если он из рюкзака - перемещаем без копирования
+  setupArtifacts.addEventListener('drop', function (evt) {
+    evt.preventDefault();
+    evt.currentTarget.style.outline = '';
+    if (evt.target.classList.contains('setup-artifacts-cell') && evt.target.children.length === 0) {
+      if (!artItem) {
+        evt.target.appendChild(draggedItem.cloneNode(true));
+        evt.target.style.backgroundColor = '';
+      } else {
+        evt.target.appendChild(artItem);
+        evt.target.style.backgroundColor = '';
+        artItem = null;
+      }
+    }
+  });
+  // при перемещении эл-та над ячейкой. подходящей для дропа, подствечиваем ее
+  setupArtifacts.addEventListener('dragenter', function (evt) {
+    evt.preventDefault();
+    if (evt.target.classList.contains('setup-artifacts-cell') && evt.target.children.length === 0) {
+      evt.target.style.backgroundColor = 'yellow';
+    } else {
+      evt.target.style.backgroundColor = '';
+    }
+  });
+  // возвращаем цвет ячейки на обычный, если эл-та над ней нет
+  setupArtifacts.addEventListener('dragleave', function (evt) {
+    evt.preventDefault();
+    evt.target.style.backgroundColor = '';
+  });
+
+
   // открываем попап по клику/нажатию на иконку
   setupOpen.addEventListener('click', function () {
     openPopup();
@@ -109,6 +171,9 @@
    */
   function closePopup() {
     setup.classList.add('hidden');
+    // сбрасываем положение окна на изначальное
+    setup.style.top = '';
+    setup.style.left = '';
     // удаляем обработчики
     document.removeEventListener('keydown', onPopupEscPress);
     setup.removeEventListener('click', onSetupClick);
