@@ -4,7 +4,7 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
 
-  window.global = {
+  window.util = {
     /**
      * при истинности заданного условия вызывает функцию
      *
