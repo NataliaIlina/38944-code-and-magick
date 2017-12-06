@@ -180,14 +180,32 @@
     setupClose.removeEventListener('keydown', onButtonEnterPress);
     setupSubmit.removeEventListener('keydown', onButtonEnterPress);
   }
+
+  /**
+   * fillElement - меняет значение свойства fill элемента
+   *
+   * @param  {Node} element HTML элемент
+   * @param  {string} color
+   */
+  function fillElement(element, color) {
+    element.style.fill = color;
+  }
+
+  /**
+   * fillElement - меняет значение свойства background-color элемента
+   *
+   * @param  {Node} element HTML элемент
+   * @param  {string} color
+   */
+  function changeBackground(element, color) {
+    element.style.backgroundColor = color;
+  }
   /**
    * onWizardFireballClick - устанавливает значение цвета из массива в фон элемента и значение инпута
    *
    */
   function onWizardFireballClick() {
-    var fireball = window.util.getRandomElement(WIZARDS_FIREBALL_COLORS);
-    mainWizardFireball.style.backgroundColor = fireball;
-    fireballInput.value = fireball;
+    window.colorizeElement(mainWizardFireball, fireballInput, WIZARDS_FIREBALL_COLORS, changeBackground);
   }
 
   /**
@@ -195,9 +213,7 @@
    *
    */
   function onWizardCoatClick() {
-    var coat = window.util.getRandomElement(WIZARDS_COAT_COLORS);
-    mainWizardCoat.style.fill = coat;
-    coatInput.value = coat;
+    window.colorizeElement(mainWizardCoat, coatInput, WIZARDS_COAT_COLORS, fillElement);
   }
 
   /**
@@ -205,9 +221,7 @@
    *
    */
   function onWizardEyesClick() {
-    var eyes = window.util.getRandomElement(WIZARDS_EYES_COLORS);
-    mainWizardEyes.style.fill = eyes;
-    eyesInput.value = eyes;
+    window.colorizeElement(mainWizardEyes, eyesInput, WIZARDS_EYES_COLORS, fillElement);
   }
 
   /**
