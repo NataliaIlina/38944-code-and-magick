@@ -40,7 +40,7 @@
     /**
     * Отрисовываем прямоугольник по заданным размерам
     *
-    * @param {object} context контекст отрисовки
+    * @param {Object} context контекст отрисовки
     * @param {number} coordinateX координата X начала отрисовки
     * @param {number} coordinateY координата Y начала отрисовки
     * @param {number} width ширина прямоугольника
@@ -53,7 +53,7 @@
     /**
     * Отрисовывам текст в канвасе
     *
-    * @param {object} context контекст отрисовки
+    * @param {Object} context контекст отрисовки
     * @param {string} string текст
     * @param {number} coordinateX координата X начала отрисовки
     * @param {number} coordinateY координата Y начала отрисовки
@@ -65,7 +65,7 @@
     /**
     * Задаем цвет заливки для элементов
     *
-    * @param {object} context контекст отрисовки
+    * @param {Object} context контекст отрисовки
     * @param {string} color цвет заливки
     */
     function setStyle(context, color) {
@@ -75,7 +75,7 @@
     /**
     * Задаем шрифт для элементов
     *
-    * @param {object} context контекст отрисовки
+    * @param {Object} context контекст отрисовки
     * @param {string} fontStyle стиль шрифта
     */
     function setFont(context, fontStyle) {
