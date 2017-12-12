@@ -2,25 +2,12 @@
 
 (function () {
   var TOTAL_WIZARDS_NUMBER = 4;
-  var WIZARDS_NAMES = [
-    'Иван',
-    'Хуан Себастьян',
-    'Мария',
-    'Кристоф',
-    'Виктор',
-    'Юлия',
-    'Люпита',
-    'Вашингтон'
-  ];
-  var WIZARDS_SURNAMES = [
-    'да Марья',
-    'Верон',
-    'Мирабелла',
-    'Вальц',
-    'Онопко',
-    'Топольницкая',
-    'Нионго',
-    'Ирвинг'
+  var WIZARDS_FIREBALL_COLORS = [
+    '#ee4830',
+    '#30a8ee',
+    '#5ce6c0',
+    '#e848d5',
+    '#e6e848'
   ];
   var WIZARDS_COAT_COLORS = [
     'rgb(101, 137, 164)',
@@ -37,97 +24,22 @@
     'yellow',
     'green'
   ];
-  var WIZARDS_FIREBALL_COLORS = [
-    '#ee4830',
-    '#30a8ee',
-    '#5ce6c0',
-    '#e848d5',
-    '#e6e848'
-  ];
 
-  var copyWizardsNames = WIZARDS_NAMES.slice();
-  var copyWizardsSurnames = WIZARDS_SURNAMES.slice();
-  var copyWizardsCoatColors = WIZARDS_COAT_COLORS.slice();
-  var copyWizardsEyesColors = WIZARDS_EYES_COLORS.slice();
-  var wizards = [];
   var wizardsListElement = document.querySelector('.setup-similar-list');
   var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
-  var fragment = document.createDocumentFragment();
-
   var setup = document.querySelector('.setup');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
-  var setupNameInput = setup.querySelector('.setup-user-name');
   var setupSubmit = setup.querySelector('.setup-submit');
   var mainWizard = setup.querySelector('.setup-wizard');
   var mainWizardCoat = mainWizard.querySelector('.wizard-coat');
   var mainWizardEyes = mainWizard.querySelector('.wizard-eyes');
   var mainWizardFireball = setup.querySelector('.setup-fireball-wrap');
-  var coatInput = setup.querySelector('input[name=coat-color]');
-  var eyesInput = setup.querySelector('input[name=eyes-color]');
-  var fireballInput = setup.querySelector('input[name=fireball-color]');
-
-  // переменные для drag'n'drop
-  var setupShop = setup.querySelector('.setup-artifacts-shop');
-  var setupArtifacts = setup.querySelector('.setup-artifacts');
-  var draggedItem = null;
-  var artItem = null;
-  // отслеживаем начало перемещения из магазина
-  setupShop.addEventListener('dragstart', function (evt) {
-    if (evt.target.tagName.toLowerCase() === 'img') {
-      draggedItem = evt.target;
-      evt.dataTransfer.setData('text/plain', evt.target.alt);
-      setupArtifacts.style.outline = '2px dashed red';
-      // если элемент отпустили раньше времени
-      draggedItem.addEventListener('dragend', function () {
-        setupArtifacts.style.outline = '';
-        draggedItem = null;
-      });
-    }
-  });
-  // отслеживаем начало перемещения из рюкзака
-  setupArtifacts.addEventListener('dragstart', function (evt) {
-    if (evt.target.tagName.toLowerCase() === 'img') {
-      artItem = evt.target;
-      setupArtifacts.style.outline = '2px dashed red';
-      evt.dataTransfer.setData('text/plain', evt.target.alt);
-    }
-  });
-  // делаем рюкзак доступным для перетаскивания
-  setupArtifacts.addEventListener('dragover', function (evt) {
-    evt.preventDefault();
-    return false;
-  });
-  // копируем элемент в пустую ячейку рюкзака, если он из рюкзака - перемещаем без копирования
-  setupArtifacts.addEventListener('drop', function (evt) {
-    evt.preventDefault();
-    evt.currentTarget.style.outline = '';
-    if (evt.target.classList.contains('setup-artifacts-cell') && evt.target.children.length === 0) {
-      if (!artItem) {
-        evt.target.appendChild(draggedItem.cloneNode(true));
-        evt.target.style.backgroundColor = '';
-      } else {
-        evt.target.appendChild(artItem);
-        evt.target.style.backgroundColor = '';
-        artItem = null;
-      }
-    }
-  });
-  // при перемещении эл-та над ячейкой. подходящей для дропа, подствечиваем ее
-  setupArtifacts.addEventListener('dragenter', function (evt) {
-    evt.preventDefault();
-    if (evt.target.classList.contains('setup-artifacts-cell') && evt.target.children.length === 0) {
-      evt.target.style.backgroundColor = 'yellow';
-    } else {
-      evt.target.style.backgroundColor = '';
-    }
-  });
-  // возвращаем цвет ячейки на обычный, если эл-та над ней нет
-  setupArtifacts.addEventListener('dragleave', function (evt) {
-    evt.preventDefault();
-    evt.target.style.backgroundColor = '';
-  });
-
+  var form = setup.querySelector('.setup-wizard-form');
+  var setupNameInput = form.querySelector('.setup-user-name');
+  var coatInput = form.querySelector('input[name=coat-color]');
+  var eyesInput = form.querySelector('input[name=eyes-color]');
+  var fireballInput = form.querySelector('input[name=fireball-color]');
 
   // открываем попап по клику/нажатию на иконку
   setupOpen.addEventListener('click', function () {
@@ -135,21 +47,16 @@
   });
   setupOpen.addEventListener('keydown', onIconEnterPress);
 
-  document.querySelector('.setup-similar').classList.remove('hidden');
-
-  // заполняем wizards
-  for (var i = 0; i < TOTAL_WIZARDS_NUMBER; i++) {
-    wizards[i] = generateObject();
-  }
   // добавляем во фрагмент копии шаблона мага
-  wizards.forEach(function (item) {
-    fragment.appendChild(renderWizard(item));
+  window.backend.load(onSuccessLoad, onErrorLoad);
+
+  // отправляем форму на сервер
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(form), closePopup, onErrorLoad);
   });
 
-  // добавляем фрагмент в DOM
-  wizardsListElement.appendChild(fragment);
-
-  // функции
+  // ------------------- функции ------------------
   /**
    * openPopup - показывает окно выбора персонажа
    *
@@ -162,7 +69,6 @@
     setup.addEventListener('click', onSetupClick);
     // закрываем на кнопку/крестик по enter
     setupClose.addEventListener('keydown', onButtonEnterPress);
-    setupSubmit.addEventListener('keydown', onButtonEnterPress);
   }
 
   /**
@@ -178,13 +84,12 @@
     document.removeEventListener('keydown', onPopupEscPress);
     setup.removeEventListener('click', onSetupClick);
     setupClose.removeEventListener('keydown', onButtonEnterPress);
-    setupSubmit.removeEventListener('keydown', onButtonEnterPress);
   }
 
   /**
    * fillElement - меняет значение свойства fill элемента
    *
-   * @param  {Node} element HTML элемент
+   * @param  {Node} element
    * @param  {string} color
    */
   function fillElement(element, color) {
@@ -194,7 +99,7 @@
   /**
    * fillElement - меняет значение свойства background-color элемента
    *
-   * @param  {Node} element HTML элемент
+   * @param  {Node} element
    * @param  {string} color
    */
   function changeBackground(element, color) {
@@ -227,7 +132,7 @@
   /**
    * onPopupEscPress - закрывает окно при нажатии на esc
    *
-   * @param  {Object} evt объект event
+   * @param  {Event} evt
    */
   function onPopupEscPress(evt) {
     if (evt.target !== setupNameInput) {
@@ -238,7 +143,7 @@
   /**
    * onIconEnterPress - открывает окно при нажатии на enter при фокусе на иконке пользователя
    *
-   * @param  {Object} evt объект event
+   * @param  {Event} evt
    */
   function onIconEnterPress(evt) {
     window.util.isEnterPress(evt, openPopup);
@@ -247,7 +152,7 @@
   /**
    * onButtonEnterPress - закрывает окно при нажатии на enter при кнопке в фокусе
    *
-   * @param  {Object} evt объект event
+   * @param  {Event} evt
    */
   function onButtonEnterPress(evt) {
     window.util.isEnterPress(evt, closePopup);
@@ -257,7 +162,7 @@
   /**
    * onSetupClick - обрабатывает клики на открытом окне выбора персонажа
    *
-   * @param  {Object} evt объект event
+   * @param  {Event} evt
    */
   function onSetupClick(evt) {
     switch (evt.target) {
@@ -280,33 +185,35 @@
   }
 
   /**
-   * generateObject - возвращает объект с данными, взятыми из массивов
-   *
-   * @return {Object} сгенерированный объект
-   */
-  function generateObject() {
-    var obj = {};
-    obj.name = window.util.getRandomElement(copyWizardsNames, true) + ' ' + window.util.getRandomElement(copyWizardsSurnames, true);
-    obj.coatColor = window.util.getRandomElement(copyWizardsCoatColors, true);
-    obj.eyesColor = window.util.getRandomElement(copyWizardsEyesColors, true);
-    return obj;
-  }
-
-  /**
   * renderWizard - возвращает скопированный с шаблона элемент со стилями
   *
-  * @param {Object} obj объект с используемыми свойствами
-  * @return {Object} скопированный стилизованный DOM-элемент
+  * @param {Object} wizard объект с используемыми свойствами
+  * @return {Node} скопированный стилизованный DOM-элемент
   */
-  function renderWizard(obj) {
+  function renderWizard(wizard) {
     var cloneElement = wizardTemplate.cloneNode(true);
     var wizardName = cloneElement.querySelector('.setup-similar-label');
     var wizardCoat = cloneElement.querySelector('.wizard-coat');
     var wizardEyes = cloneElement.querySelector('.wizard-eyes');
-    wizardName.textContent = obj.name;
-    wizardCoat.style.fill = obj.coatColor;
-    wizardEyes.style.fill = obj.eyesColor;
+    wizardName.textContent = wizard.name;
+    wizardCoat.style.fill = wizard.colorCoat;
+    wizardEyes.style.fill = wizard.colorEyes;
     return cloneElement;
   }
 
+  function onSuccessLoad(wizards) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < TOTAL_WIZARDS_NUMBER; i++) {
+      fragment.appendChild(renderWizard(window.util.getRandomElement(wizards)));
+    }
+    wizardsListElement.appendChild(fragment);
+    document.querySelector('.setup-similar').classList.remove('hidden');
+  }
+
+  function onErrorLoad(message) {
+    var node = document.createElement('div');
+    node.textContent = message;
+    node.style = 'text-align: center; color: white; background-color: red; width: 100%; height: 30px';
+    document.body.insertAdjacentElement('afterbegin', node);
+  }
 })();
