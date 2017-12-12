@@ -1,9 +1,19 @@
 'use strict';
 
 (function () {
-  window.colorizeElement = function (element, input, arr, callback) {
-    var color = window.util.getRandomElement(arr);
+  /**
+   * colorizeElement - изменяет цвет элемента случайным цветом из массива с передачей значения в соответствующее поле формы
+   *
+   * @param {Node} element
+   * @param {Node} input
+   * @param {Array} colors
+   * @param {function} changeColor функция замены цвета
+   */
+  function colorizeElement(element, input, colors, changeColor) {
+    var color = window.util.getRandomElement(colors);
     input.value = color;
-    callback(element, color);
-  };
+    changeColor(element, color);
+  }
+
+  window.colorizeElement = colorizeElement;
 })();
